@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lector de Excel en tiempo real</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Datos del archivo Excel</h1>
+    <table id="excelData">
+        <!-- Aquí se mostrarán los datos del archivo Excel -->
+    </table>
+
+    <!-- Incluir la biblioteca XLSX desde la carpeta local -->
+    <script src="xlsx.full.min.js"></script>
+
+    <script>
+        // Función para cargar los datos del archivo Excel
+        function loadExcelData() {
+            fetch('datos.xlsx') // Cambia 'datos.xlsx' por el nombre de tu archivo Excel
+                .then(response => response.arrayBuffer())
+                .then(buffer => {
+                    const data = new Uint8Array(buffer);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const sheetName = workbook.SheetNames[0]; // Suponemos que solo hay una hoja en el archivo
+
+                    const worksheet = workbook.Sheets[sheetName];
+                    const excelData = XLSX.utils.sheet_to_html(worksheet);
+
+                    document.getElementById('excelData').innerHTML = excelData;
+                });
+        }
+
+        // Cargamos los datos del archivo Excel al cargar la página y luego lo actualizamos cada 5 segundos
+        document.addEventListener('DOMContentLoaded', function () {
+            loadExcelData();
+            setInterval(loadExcelData, 5000); // 5000 milisegundos = 5 segundos
+        });
+    </script>
+</body>
+</html>
