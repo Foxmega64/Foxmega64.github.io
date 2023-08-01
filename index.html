@@ -10,18 +10,19 @@
         <!-- Aquí se mostrarán los datos del archivo Excel -->
     </table>
 
-    <!-- Incluir la biblioteca XLSX desde la carpeta local -->
-    <script src="xlsx.full.min.js"></script>
+    <!-- Incluir la biblioteca XLSX desde un CDN (Content Delivery Network) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
 
     <script>
         // Función para cargar los datos del archivo Excel
         function loadExcelData() {
-            fetch('datos.xlsx') // Cambia 'datos.xlsx' por el nombre de tu archivo Excel
+            const excelFile = 'datos.xlsx?' + Date.now(); // Añadir una consulta aleatoria con la fecha actual
+            fetch(excelFile)
                 .then(response => response.arrayBuffer())
                 .then(buffer => {
                     const data = new Uint8Array(buffer);
                     const workbook = XLSX.read(data, { type: 'array' });
-                    const sheetName = workbook.SheetNames[0]; // Suponemos que solo hay una hoja en el archivo
+                    const sheetName = workbook.SheetNames[0];
 
                     const worksheet = workbook.Sheets[sheetName];
                     const excelData = XLSX.utils.sheet_to_html(worksheet);
